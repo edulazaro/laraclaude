@@ -1,7 +1,7 @@
 ---
-name: laraclaude:unused-columns
+name: lc:unused-columns
 description: Detect database columns that are never referenced in the codebase.
-argument-hint: "[table-name]"
+argument-hint: "[analyze | fix | fix --dry-run | table-name | fix table-name]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -10,7 +10,17 @@ allowed-tools: Read Grep Bash Edit Write Glob
 
 Find database columns that exist in migrations (or the live database) but are never referenced anywhere in the application codebase. These are candidates for removal.
 
-## Process
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Analyze all tables for unused columns. Read-only report. |
+| `fix` | Generate a migration to drop all confirmed unused columns. Asks for confirmation before each column. |
+| `fix --dry-run` | Show the migration that would be generated without writing anything. |
+| `[table-name]` | Analyze unused columns in a specific table only. |
+| `fix [table-name]` | Generate a drop-column migration for a specific table, with confirmation. |
+
+## Analysis Process
 
 ### Step 1: Get Column List
 
@@ -163,18 +173,28 @@ TOTAL UNUSED COLUMNS: 8 across 4 tables
 
 Then list all unused columns with details.
 
-### Step 7: Suggest Removal
+## Fix Mode (`fix` or `fix [table-name]`)
 
-For each UNUSED column, suggest a migration to remove it:
+For each confirmed unused column, generate a migration to drop it:
+
+1. Present each unused column and ask the user to confirm removal.
+2. Group confirmed columns by table.
+3. Generate a single migration per table:
 
 ```php
-// Suggested migration to remove unused columns from 'properties' table
 Schema::table('properties', function (Blueprint $table) {
     $table->dropColumn(['legacy_portal_id', 'old_reference_code', 'temp_import_flag']);
 });
 ```
 
-Offer to generate the migration file. If the user agrees, create it with an appropriate timestamp.
+4. Write the migration file with an appropriate timestamp.
+5. Validate syntax with `php -l`.
+
+**Each column removal requires explicit user confirmation.**
+
+## Dry Run Mode (`fix --dry-run`)
+
+Show the migration content that would be generated for each table, without writing any files.
 
 ## Important Caveats
 

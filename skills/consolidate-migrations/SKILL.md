@@ -1,7 +1,7 @@
 ---
-name: laraclaude:consolidate-migrations
+name: lc:consolidate-migrations
 description: Analyze and consolidate fragmented Laravel migration files. Groups by table, detects dependencies, proposes safe merges.
-argument-hint: "[analyze | all | table-name]"
+argument-hint: "[analyze | fix | fix --dry-run | table-name | fix table-name]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -10,11 +10,17 @@ allowed-tools: Read Grep Bash Edit Write Glob
 
 Analyze and consolidate fragmented migration files for Laravel projects. Multiple migrations that modify the same table over time can be merged into a single clean migration.
 
-## Modes
+## Subcommands
 
-The skill operates in three modes based on the argument provided:
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Analyze all migrations and report consolidation opportunities. Read-only. |
+| `fix` | Consolidate all tables classified as SAFE_TO_MERGE. Asks for confirmation before each change. |
+| `fix --dry-run` | Show what consolidation would produce without writing any files. |
+| `[table-name]` | Analyze migrations for a specific table only. |
+| `fix [table-name]` | Consolidate migrations for a specific table, with confirmation. |
 
-### Mode: `analyze` (or no argument)
+## Analysis Mode (default, or explicit `analyze`)
 
 Perform a read-only analysis of all migration files.
 
@@ -50,30 +56,40 @@ clients                | 1          | ALREADY_OPTIMAL   |
 
 7. **For each non-optimal table**, list the specific migrations that would be affected.
 
-### Mode: `all`
+## Fix Mode (`fix` or `fix [table-name]`)
 
-Consolidate all tables classified as SAFE_TO_MERGE.
+Consolidate migrations, asking for confirmation before each change.
 
 **Steps:**
 
-1. Run the `analyze` mode first to identify candidates.
-2. Present the list of tables that will be consolidated and **ask for explicit confirmation** before proceeding.
-3. For each SAFE_TO_MERGE table, perform the consolidation (see Consolidation Process below).
-4. After all consolidations, run `php -l` on every new migration file to validate syntax.
-5. Report what was done: files created, files that can be deleted, total reduction.
+1. Run the analysis first to identify candidates.
+2. If no `[table-name]` is specified, operate on all SAFE_TO_MERGE tables. If a table name is given, operate on that table only.
+3. **Ask for explicit confirmation** before proceeding with each table.
+4. For each table to consolidate, perform the Consolidation Process (see below).
+5. After all consolidations, run `php -l` on every new migration file to validate syntax.
+6. Report what was done: files created, files that can be deleted, total reduction.
 
-### Mode: `[table-name]`
+## Dry Run Mode (`fix --dry-run`)
 
-Consolidate migrations for a specific table.
+Show what each consolidated migration would look like, without writing any files.
+
+**Steps:**
+
+1. Run the analysis first to identify candidates.
+2. For each SAFE_TO_MERGE table, display the consolidated migration content that *would* be generated.
+3. List the files that *would* be deleted.
+4. Show the total reduction in migration file count.
+
+## Target Mode (`[table-name]`)
+
+Analyze migrations for a specific table.
 
 **Steps:**
 
 1. Find all migrations that touch the specified table.
-2. Classify the table (using the same logic as analyze mode).
-3. If SAFE_TO_MERGE: proceed with consolidation after confirmation.
-4. If MERGE_WITH_CAUTION: show warnings about data migrations, ask if user wants to proceed. If yes, keep data migrations as separate files.
-5. If DO_NOT_MERGE: explain why and stop.
-6. If ALREADY_OPTIMAL: inform user and stop.
+2. Classify the table (using the same logic as analysis mode).
+3. Display the classification with details about each migration file.
+4. If MERGE_WITH_CAUTION or DO_NOT_MERGE, explain why.
 
 ## Consolidation Process
 

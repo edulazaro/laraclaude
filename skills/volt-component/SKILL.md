@@ -1,5 +1,5 @@
 ---
-name: laraclaude:volt-component
+name: lc:volt-component
 description: Generate a Livewire Volt single-file component following project conventions.
 argument-hint: "[component-name]"
 user-invocable: true
@@ -9,6 +9,15 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Generate Volt Component
 
 Create a Livewire Volt single-file component that follows the project's conventions and patterns. All Livewire components in this project MUST use the Volt single-file format -- never create separate PHP class files in `app/Livewire/`.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Prompt for the component name and purpose, then generate. |
+| `[component-name]` | Generate a Volt component at the specified path. Names can use dot or slash notation. |
+
+This is a generator skill -- it always creates files. There is no analyze-only or fix mode.
 
 ## Process
 

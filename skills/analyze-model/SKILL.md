@@ -1,7 +1,7 @@
 ---
-name: laraclaude:analyze-model
+name: lc:analyze-model
 description: Deep analysis of a Laravel Eloquent model - relationships, scopes, casts, fillable, observers, keepers, actions.
-argument-hint: "[ModelName]"
+argument-hint: "[analyze | fix | fix --dry-run | ModelName | fix ModelName]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -10,7 +10,17 @@ allowed-tools: Read Grep Bash Edit Write Glob
 
 Perform a comprehensive analysis of a Laravel Eloquent model, extracting all relevant information about its structure, relationships, behaviors, and potential issues.
 
-## Process
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | List all models and ask which to analyze. Read-only report. |
+| `fix` | Analyze all models and auto-fix common issues (missing fillable, broken casts, etc.) with confirmation before each change. |
+| `fix --dry-run` | Show what fixes would be applied across all models without changing anything. |
+| `[ModelName]` | Analyze a specific model. Read-only report. |
+| `fix [ModelName]` | Analyze and fix issues in a specific model, with confirmation before each change. |
+
+## Analysis Process
 
 ### Step 1: Locate the Model
 
@@ -165,3 +175,21 @@ Accessors: 4
 Actions: 3
 Potential issues: 2
 ```
+
+## Fix Mode (`fix` or `fix [ModelName]`)
+
+When running in fix mode, automatically apply fixes for detected issues with confirmation before each change:
+
+### Fixable Issues:
+
+1. **Missing $fillable entries**: Add missing columns to the `$fillable` array (excluding id, timestamps, soft deletes, and auto-generated fields).
+2. **Missing $casts entries**: Add appropriate casts for date, boolean, JSON, and enum columns.
+3. **Missing relationship methods**: Add `belongsTo` methods for FK columns that lack corresponding relationship methods.
+4. **Broken relationship references**: Fix incorrect model class references or foreign key names in relationship definitions.
+5. **Soft deletes mismatch**: Add `SoftDeletes` trait if migration has `softDeletes()` but model lacks the trait, or vice versa.
+
+**Each fix requires explicit user confirmation before applying.**
+
+## Dry Run Mode (`fix --dry-run`)
+
+Show all the fixes that would be applied (same as fix mode) but do not write any changes. Display the before/after diff for each proposed change.

@@ -1,7 +1,7 @@
 ---
-name: laraclaude:find-n-plus-one
+name: lc:find-n-plus-one
 description: Detect N+1 query problems in Blade views, Livewire components, and controllers.
-argument-hint: "[file-path]"
+argument-hint: "[analyze | fix | fix --dry-run | file-path | fix file-path]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -9,6 +9,16 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Find N+1 Query Problems
 
 Statically analyze Blade views, Livewire/Volt components, and controllers to detect N+1 query problems where relationships are accessed inside loops without eager loading.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Scan the entire project for N+1 problems. Read-only report. |
+| `fix` | Scan and auto-add `with()` eager loading to queries. Asks for confirmation before each change. |
+| `fix --dry-run` | Show what `with()` calls would be added without changing anything. |
+| `[file-path]` | Analyze a specific file and trace its data sources. Read-only. |
+| `fix [file-path]` | Fix N+1 issues in a specific file, with confirmation. |
 
 ## What is N+1?
 
@@ -27,7 +37,7 @@ $properties = Property::with('office')->get();
 @endforeach
 ```
 
-## Process
+## Analysis Process
 
 ### Step 1: Determine Scope
 
@@ -162,6 +172,20 @@ Top offenders:
   resources/views/livewire/clients/show.blade.php         - 3 issues
   resources/views/livewire/operations/table.blade.php     - 2 issues
 ```
+
+## Fix Mode (`fix` or `fix [file-path]`)
+
+For each N+1 problem detected, automatically add the missing `with()` calls:
+
+1. **Locate the query** that builds the collection (in Volt PHP block, controller, or Livewire component).
+2. **Add the missing relationship** to an existing `with()` call, or add a new `->with('relationship')` clause.
+3. **For relationship count issues**, replace `->count()` access with `withCount()` on the query.
+4. **Ask for confirmation** before each change.
+5. Show the before/after diff for the query modification.
+
+## Dry Run Mode (`fix --dry-run`)
+
+Show exactly what query modifications would be made, with before/after diffs, without writing any changes.
 
 ## Severity Classification
 

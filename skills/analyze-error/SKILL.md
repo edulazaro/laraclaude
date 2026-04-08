@@ -1,7 +1,7 @@
 ---
-name: laraclaude:analyze-error
+name: lc:analyze-error
 description: Paste a Laravel stacktrace and get root cause analysis with suggested fix.
-argument-hint: "(paste error after invoking)"
+argument-hint: "[analyze | fix | fix --dry-run]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -9,6 +9,16 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Analyze Laravel Error
 
 Parse a Laravel stacktrace or error message, identify the root cause, read the relevant source files, and provide a specific fix.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Paste an error after invoking. Analyzes and reports root cause with suggested fix. |
+| `fix` | Analyze the error and apply the suggested fix, with confirmation before each change. |
+| `fix --dry-run` | Analyze the error and show exactly what changes would be made without applying them. |
+
+In all modes, the user pastes the error output after invoking the skill.
 
 ## Process
 
@@ -133,9 +143,22 @@ After identifying the primary fix, check if the same pattern exists elsewhere:
 1. Use `Grep` to search for similar problematic patterns in other files.
 2. If found, report them as "Related issues that may need the same fix" with file paths and line numbers.
 
-### Step 7: Offer to Apply
+### Step 7: Apply Fix (fix mode)
 
-Ask the user if they want to apply the fix. If yes, use `Edit` to make the change.
+In **fix mode**:
+1. Show the proposed fix with before/after diff.
+2. **Ask for confirmation** before applying.
+3. Use `Edit` to apply the change.
+4. If related issues were found, ask if the user wants to fix those too.
+
+In **fix --dry-run mode**:
+1. Show the proposed fix with before/after diff.
+2. Show all related issues and their proposed fixes.
+3. Do not apply any changes.
+
+In **default mode** (no subcommand):
+1. Show the analysis, root cause, and suggested fix.
+2. Ask the user if they want to apply the fix.
 
 ## Error Parsing Tips
 

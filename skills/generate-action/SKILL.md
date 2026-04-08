@@ -1,5 +1,5 @@
 ---
-name: laraclaude:generate-action
+name: lc:generate-action
 description: Create a Laractions action class with proper boilerplate.
 argument-hint: "[Model/ActionName]"
 user-invocable: true
@@ -9,6 +9,15 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Generate Laractions Action
 
 Create a Laractions action class following the project's conventions, and register it in the corresponding model.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Prompt for model name and action name, then generate. |
+| `[Model/ActionName]` | Generate the specified action class and register it in the model. |
+
+This is a generator skill -- it always creates files. There is no analyze-only or fix mode.
 
 ## Process
 

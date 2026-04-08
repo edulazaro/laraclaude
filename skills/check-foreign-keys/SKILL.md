@@ -1,7 +1,7 @@
 ---
-name: laraclaude:check-foreign-keys
+name: lc:check-foreign-keys
 description: Detect broken, orphaned, or missing foreign key constraints in Laravel migrations and models.
-argument-hint: "[table-name]"
+argument-hint: "[analyze | fix | fix --dry-run | table-name | fix table-name]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -10,7 +10,17 @@ allowed-tools: Read Grep Bash Edit Write Glob
 
 Detect inconsistencies between foreign key constraints defined in migrations and relationships defined in Eloquent models. Finds broken, orphaned, or missing constraints.
 
-## Process
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Analyze all migrations and models, report FK inconsistencies. Read-only. |
+| `fix` | Generate missing FK migrations and add missing relationship methods. Asks for confirmation before each change. |
+| `fix --dry-run` | Show what migrations and model changes would be generated without writing anything. |
+| `[table-name]` | Analyze FK issues involving a specific table (as source or target). |
+| `fix [table-name]` | Fix FK issues for a specific table only, with confirmation. |
+
+## Analysis Process (default)
 
 ### Step 1: Collect Foreign Keys from Migrations
 
@@ -125,6 +135,33 @@ Warnings                              | 8
 Tables with no issues                 | 30
 ```
 
+## Fix Mode (`fix` or `fix [table-name]`)
+
+For each detected issue, generate the appropriate fix with confirmation before applying:
+
+### For missing FK constraints (Issue B):
+Generate a new migration file that adds the missing foreign key:
+```php
+Schema::table('orders', function (Blueprint $table) {
+    $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+});
+```
+
+### For missing relationship methods (Issue A):
+Add the missing `belongsTo`/`hasMany`/`hasOne` method to the appropriate model file using `Edit`.
+
+### For migration order issues (Issue F):
+Suggest renaming migration files to fix timestamp ordering, with confirmation.
+
+### For onDelete conflicts (Issue E):
+Generate a migration to drop and recreate the FK with the correct onDelete action.
+
+**Each fix requires explicit user confirmation before applying.**
+
+## Dry Run Mode (`fix --dry-run`)
+
+Show exactly what migrations would be generated and what model changes would be made, without writing anything. Display the full content of proposed migration files and the model diffs.
+
 ## Special Handling
 
 - **Polymorphic relationships** (`morphTo`, `morphMany`, `morphOne`, `morphToMany`): These intentionally have no FK constraints. Do not report them as missing FKs. Note them separately as "Polymorphic relationships (no FK expected)".
@@ -135,4 +172,4 @@ Tables with no issues                 | 30
 ## Notes
 
 - This is a static analysis tool. It reads migration files and model files only -- it does not connect to the database.
-- For runtime FK checking against an actual database, see `laraclaude:orphaned-records`.
+- For runtime FK checking against an actual database, see `lc:orphaned-records`.

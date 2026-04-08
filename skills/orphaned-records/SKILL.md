@@ -1,7 +1,7 @@
 ---
-name: laraclaude:orphaned-records
+name: lc:orphaned-records
 description: Find orphaned database records where foreign key parent records don't exist.
-argument-hint: "[table-name]"
+argument-hint: "[analyze | fix | fix --dry-run | table-name | fix table-name]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -9,6 +9,16 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Find Orphaned Records
 
 Detect orphaned database records where a foreign key column references a parent record that no longer exists. This runs actual queries against the database via Docker.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Scan all tables for orphaned records. Read-only report. |
+| `fix` | Find and delete or nullify orphaned records. Asks for confirmation before each table. |
+| `fix --dry-run` | Show what cleanup queries would run without executing them. |
+| `[table-name]` | Analyze orphaned records in a specific table only. |
+| `fix [table-name]` | Fix orphaned records in a specific table, with confirmation. |
 
 ## Process
 
@@ -136,46 +146,42 @@ Column: activitable_id (polymorphic)
   Skipped -- use manual inspection if needed.
 ```
 
-### Step 7: Suggest Fixes
+## Fix Mode (`fix` or `fix [table-name]`)
 
-For each table with orphaned records, suggest appropriate fixes based on the FK's onDelete action and business context:
+For each table with orphaned records, offer the appropriate fix based on FK's onDelete action and column nullability:
 
-#### Option A: Delete Orphaned Records
+### Option A: Delete Orphaned Records
+For non-nullable FK columns or when records are meaningless without the parent:
 ```php
-// Delete orphaned records from {table} where {column} references non-existent {ref_table} records
 DB::table('{table}')
     ->whereNotNull('{column}')
     ->whereNotIn('{column}', DB::table('{ref_table}')->select('{ref_column}'))
     ->delete();
 ```
 
-#### Option B: Set to NULL (if column is nullable)
+### Option B: Set to NULL (if column is nullable)
+For nullable FK columns where the record is still meaningful:
 ```php
-// Set orphaned FK values to NULL
 DB::table('{table}')
     ->whereNotNull('{column}')
     ->whereNotIn('{column}', DB::table('{ref_table}')->select('{ref_column}'))
     ->update(['{column}' => null]);
 ```
 
-#### Option C: Create a Migration to Clean Up
-Suggest creating a migration that runs the cleanup, so it's tracked and reversible:
+### Option C: Generate a Cleanup Migration
+For production-safe approach, create a migration file:
 ```php
 public function up()
 {
-    // Clean orphaned records in {table}
     DB::statement('DELETE FROM {table} WHERE {column} NOT IN (SELECT {ref_column} FROM {ref_table}) AND {column} IS NOT NULL');
 }
 ```
 
-### Step 8: Offer to Execute Fix
+**Each fix requires explicit user confirmation before executing.** The user chooses which option (A, B, or C) for each table.
 
-Ask the user if they want to:
-1. Execute the fix directly via tinker (for development environments)
-2. Generate a migration file for the fix (for production-safe approach)
-3. Do nothing (just reporting)
+## Dry Run Mode (`fix --dry-run`)
 
-If executing directly, always ask for confirmation and show the exact query that will run.
+Show exactly what queries would be executed and how many records would be affected, without running any destructive queries. The count queries still run to show impact.
 
 ### Summary Table
 

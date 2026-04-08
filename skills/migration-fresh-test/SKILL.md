@@ -1,7 +1,7 @@
 ---
-name: laraclaude:migration-fresh-test
+name: lc:migration-fresh-test
 description: Run migrate:fresh in Docker and report errors with fix suggestions.
-argument-hint: "[--seed]"
+argument-hint: "[analyze | fix | fix --dry-run | --seed]"
 user-invocable: true
 allowed-tools: Read Grep Bash Edit Write Glob
 ---
@@ -9,6 +9,15 @@ allowed-tools: Read Grep Bash Edit Write Glob
 # Migration Fresh Test
 
 Run `php artisan migrate:fresh` inside the project's Docker container and provide detailed error analysis with fix suggestions when migrations fail.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| *(no argument)* | Run migrate:fresh, report any errors with root cause analysis. |
+| `fix` | Run migrate:fresh and auto-fix each error encountered, with confirmation before each fix. Re-runs after each fix until all migrations pass. |
+| `fix --dry-run` | Run migrate:fresh, diagnose errors, show what fixes would be applied without changing anything. |
+| `--seed` | Run migrate:fresh --seed (can be combined with fix modes). |
 
 ## Process
 
@@ -103,16 +112,21 @@ For each error, use `Read` to examine the failing migration and related files, t
 - Diagnosis: Search for the class in the codebase
 - Fix: Update the import/reference
 
-### Step 6: Provide Fix and Offer to Apply
+### Step 6: Apply Fixes (fix mode)
 
-For each error:
+In **fix mode**, after diagnosing each error:
 
 1. Show the error clearly with the migration file path and line number.
 2. Explain the root cause.
 3. Show the specific code that needs to change.
-4. Ask if the user wants to apply the fix.
-5. If yes, use `Edit` to apply the fix.
-6. After fixing, offer to re-run `migrate:fresh` to verify.
+4. **Ask for confirmation** before applying.
+5. If confirmed, use `Edit` to apply the fix.
+6. **Re-run `migrate:fresh`** to verify the fix and catch the next error.
+7. Repeat until all migrations pass or the user decides to stop.
+
+In **fix --dry-run mode**, show all the same information but skip steps 4-7.
+
+In **default mode** (no fix), show the diagnosis and suggested fix but do not apply.
 
 ## Output Format
 
