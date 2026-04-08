@@ -328,6 +328,24 @@ Verify the project is production-ready with a comprehensive checklist.
 
 ---
 
+## Compatibility
+
+### Claude Code (recommended)
+
+Works everywhere Claude Code runs:
+
+- **Terminal**: Claude Code CLI
+- **VS Code**: via the [Claude Code extension](https://marketplace.visualstudio.com/items?itemName=anthropics.claude-code)
+- **JetBrains** (PHPStorm, WebStorm, etc.): via the [Claude Code extension](https://plugins.jetbrains.com/plugin/27718-claude-code)
+- **Any IDE with integrated terminal**: Cursor, Windsurf, etc.
+
+### Agent Skills compatible tools
+
+LaraClaude skills follow the [Agent Skills](https://agentskills.io) standard. Any tool that supports this standard can use them, including:
+
+- **[Crush](https://github.com/charmbracelet/crush)**: copy the `skills/` directory to `~/.config/crush/skills/`, `.crush/skills/`, or `.claude/skills/` in your project
+- Any future tool that implements the Agent Skills specification
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/code)
@@ -355,3 +373,11 @@ Created by [Edu Lazaro](https://edulazaro.com)
 ## License
 
 MIT - see [LICENSE](LICENSE)
+
+## Branding
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/laraclaude-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="art/laraclaude-light.svg">
+  <img alt="LaraClaude" src="art/laraclaude-light.svg" width="457">
+</picture>
