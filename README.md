@@ -361,20 +361,16 @@ Pull requests welcome. To add a new skill:
 3. Add to README
 4. Submit PR
 
+## Author
+
+Created by [Edu Lazaro](https://edulazaro.com)
+
 ## Sponsors
 
 <p>
   <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="24" alt="Kenodo"></a>&nbsp;<a href="https://kenodo.com">Kenodo</a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="24" alt="AndorraDev"></a>&nbsp;<a href="https://andorradev.com">AndorraDev</a>
 </p>
-
-## Author
-
-Created by [Edu Lazaro](https://edulazaro.com)
-
-## License
-
-MIT - see [LICENSE](LICENSE)
 
 ## Branding
 
@@ -388,3 +384,7 @@ MIT - see [LICENSE](LICENSE)
     <img src="art/laraclaude-dark.svg" width="300" alt="LaraClaude Dark">
   </div>
 </div>
+
+## License
+
+MIT - see [LICENSE](LICENSE)
