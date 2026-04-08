@@ -363,10 +363,16 @@ Pull requests welcome. To add a new skill:
 
 ## Sponsors
 
-<p>
-  <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="48" alt="Kenodo"></a>&nbsp;&nbsp;&nbsp;
-  <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="48" alt="AndorraDev"></a>
-</p>
+<div>
+  <div style="display:inline-block;text-align:center;margin-right:20px">
+    <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="48" alt="Kenodo"></a><br>
+    <a href="https://kenodo.com">Kenodo</a>
+  </div>
+  <div style="display:inline-block;text-align:center">
+    <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="48" alt="AndorraDev"></a><br>
+    <a href="https://andorradev.com">AndorraDev</a>
+  </div>
+</div>
 
 ## Author
 
