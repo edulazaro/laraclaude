@@ -363,18 +363,10 @@ Pull requests welcome. To add a new skill:
 
 ## Sponsors
 
-<table border="0" cellspacing="0" cellpadding="10">
-  <tr>
-    <td align="center">
-      <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="48" alt="Kenodo"></a><br>
-      <a href="https://kenodo.com">Kenodo</a>
-    </td>
-    <td align="center">
-      <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="48" alt="AndorraDev"></a><br>
-      <a href="https://andorradev.com">AndorraDev</a>
-    </td>
-  </tr>
-</table>
+<p>
+  <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="48" alt="Kenodo"></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="48" alt="AndorraDev"></a>
+</p>
 
 ## Author
 
@@ -386,15 +378,13 @@ MIT - see [LICENSE](LICENSE)
 
 ## Branding
 
-<table border="0" cellspacing="0" cellpadding="10">
-  <tr>
-    <td align="center">
-      <strong>Light</strong><br><br>
-      <img src="art/laraclaude-light.svg" width="300" alt="LaraClaude Light">
-    </td>
-    <td align="center">
-      <strong>Dark</strong><br><br>
-      <img src="art/laraclaude-dark.svg" width="300" alt="LaraClaude Dark">
-    </td>
-  </tr>
-</table>
+<div>
+  <div style="display:inline-block;text-align:center;margin-right:20px">
+    <strong>Light</strong><br>
+    <img src="art/laraclaude-light.svg" width="300" alt="LaraClaude Light">
+  </div>
+  <div style="display:inline-block;text-align:center">
+    <strong>Dark</strong><br>
+    <img src="art/laraclaude-dark.svg" width="300" alt="LaraClaude Dark">
+  </div>
+</div>
