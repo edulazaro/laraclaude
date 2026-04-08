@@ -363,8 +363,18 @@ Pull requests welcome. To add a new skill:
 
 ## Sponsors
 
-[![Kenodo](art/logo-kenodo.png)](https://kenodo.com)
-[![AndorraDev](art/logo-andorradev.png)](https://andorradev.com)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="80" alt="Kenodo"></a><br>
+      <a href="https://kenodo.com">Kenodo</a>
+    </td>
+    <td align="center">
+      <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="80" alt="AndorraDev"></a><br>
+      <a href="https://andorradev.com">AndorraDev</a>
+    </td>
+  </tr>
+</table>
 
 ## Author
 
@@ -376,10 +386,15 @@ MIT - see [LICENSE](LICENSE)
 
 ## Branding
 
-**Light**
-
-![LaraClaude Light](art/laraclaude-light.svg)
-
-**Dark**
-
-![LaraClaude Dark](art/laraclaude-dark.svg)
+<table>
+  <tr>
+    <td align="center">
+      <strong>Light</strong><br><br>
+      <img src="art/laraclaude-light.svg" width="300" alt="LaraClaude Light">
+    </td>
+    <td align="center">
+      <strong>Dark</strong><br><br>
+      <img src="art/laraclaude-dark.svg" width="300" alt="LaraClaude Dark">
+    </td>
+  </tr>
+</table>
