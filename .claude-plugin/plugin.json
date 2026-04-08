@@ -1,0 +1,10 @@
+{
+  "name": "laraclaude",
+  "description": "The ultimate Laravel toolkit for Claude Code. Migration consolidation, model analysis, N+1 detection, Volt scaffolding, and more.",
+  "author": {
+    "name": "Edu Lazaro",
+    "email": "hello@abodara.com"
+  },
+  "version": "0.1.0",
+  "repository": "https://github.com/edulazaro/laraclaude"
+}
