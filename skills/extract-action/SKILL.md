@@ -21,14 +21,39 @@ This is a refactoring skill -- it creates an action file and modifies the source
 
 ## Process
 
-### Step 1: Locate the Source Method
+### Step 0: Verify Laractions Is Installed
+
+1. Use `Grep` to check if `edulazaro/laractions` exists in `composer.json`.
+2. If NOT found, stop and inform the user:
+   ```
+   Laractions is not installed. Install it with:
+   composer require edulazaro/laractions
+   ```
+3. If found, continue.
+
+### Step 1: Read the Base Action Class
+
+Read the installed `Action.php` from vendor to understand the current API:
+
+1. Use `Read` to load `vendor/edulazaro/laractions/src/Action.php`.
+2. Note all available methods and properties:
+   - `create()`, `run()`, `dispatch()`, `handle()`
+   - `queue()`, `delay()`, `retry()`
+   - `actor()`, `on()`, `with()`
+   - `trace()`, `enableLogging()`, `log()`
+   - `$rules` for validation
+   - `$tries`, `$delay`, `$queue` class properties
+3. Also read `vendor/edulazaro/laractions/src/Concerns/HasActions.php` to understand the trait.
+4. This ensures the generated code matches the actual installed version, not assumptions.
+
+### Step 2: Locate the Source Method
 
 1. Parse the argument to extract file path and method name (separated by `:`).
 2. If no argument provided, ask the user for the file and method.
 3. Use `Read` to load the source file.
 4. Find the target method and extract its full body.
 
-### Step 2: Identify the Model
+### Step 3: Identify the Model
 
 Analyze the method body to determine which model the action operates on:
 
@@ -37,7 +62,15 @@ Analyze the method body to determine which model the action operates on:
 3. For Volt components, check public properties for model instances
 4. If multiple models are involved, identify the primary model (the one being acted upon)
 
-### Step 3: Separate Concerns
+### Step 4: Study Existing Actions
+
+1. Use `Glob` to find existing actions in `app/Actions/{Model}/` directory.
+2. If actions exist, use `Read` to examine one or two to understand conventions:
+   - Import patterns, parameter passing, return types, error handling
+   - Whether they use `$rules`, `trace()`, `enableLogging()`, queue properties, etc.
+3. Match the new action to these patterns for consistency.
+
+### Step 5: Separate Concerns
 
 Analyze the method and separate:
 
@@ -56,7 +89,7 @@ Analyze the method and separate:
 - Flash messages (`session()->flash()`)
 - Livewire dispatching (`$this->dispatch()`)
 
-### Step 4: Design the Action
+### Step 6: Design the Action
 
 Determine the action's interface:
 
@@ -64,8 +97,10 @@ Determine the action's interface:
 2. **Parameters**: What data the action needs (extracted from the method's dependencies)
 3. **Return type**: What the action returns (the created/updated model, a status, void)
 4. **Model property**: The primary model instance the action operates on
+5. **Validation rules**: If the extracted logic validates data, move those rules to `$rules`
+6. **Queue suitability**: If the logic is heavy (API calls, file processing, email sending), suggest async execution
 
-### Step 5: Generate the Action Class
+### Step 7: Generate the Action Class
 
 Create the action file at `app/Actions/{Model}/{ActionName}.php`:
 
@@ -83,7 +118,6 @@ class CreatePropertyAction extends Action
 
     public function handle(array $data): Property
     {
-        // Business logic extracted from controller
         $this->property->update([
             'name' => $data['name'],
             'address' => $data['address'],
@@ -101,7 +135,9 @@ class CreatePropertyAction extends Action
 
 Use `Write` to create the file.
 
-### Step 6: Register in Model
+**IMPORTANT: Do NOT add `$rules`, `$tries`, `$delay`, `$queue`, `trace()`, `enableLogging()`, or `log()` unless the user explicitly asks for them.** Extract only the business logic into a clean action. These features are available but should only be added on request.
+
+### Step 8: Register in Model
 
 1. Use `Read` to load the model file.
 2. Add the action to the `$actions` array using `Edit`:
@@ -109,11 +145,13 @@ Use `Write` to create the file.
    'create_property' => CreatePropertyAction::class,
    ```
 3. Add the `use` import for the action class.
-4. If the model lacks `HasActions` trait, add it.
+4. If the model lacks `HasActions` trait, add it:
+   - Add `use EduLazaro\Laractions\Concerns\HasActions;` import
+   - Add `use HasActions;` in the class body
 
-### Step 7: Refactor the Original Method
+### Step 9: Refactor the Original Method
 
-Use `Edit` to replace the business logic in the original method with the action call:
+Use `Edit` to replace the business logic in the original method with the action call.
 
 **Before (controller):**
 ```php
@@ -135,7 +173,7 @@ public function store(Request $request, Property $property)
 }
 ```
 
-**After (controller):**
+**After (controller) -- synchronous:**
 ```php
 public function store(Request $request, Property $property)
 {
@@ -145,6 +183,21 @@ public function store(Request $request, Property $property)
 
     return redirect()->route('properties.show', $property)
         ->with('success', text('property_updated', 'Property updated'));
+}
+```
+
+**After (controller) -- asynchronous (for heavy operations):**
+```php
+public function store(Request $request, Property $property)
+{
+    $validated = $request->validate([...]);
+
+    $property->action('create_property')
+        ->queue('default')
+        ->dispatch($validated);
+
+    return redirect()->route('properties.show', $property)
+        ->with('success', text('property_queued', 'Property update queued'));
 }
 ```
 
@@ -178,22 +231,69 @@ public function save()
 }
 ```
 
-### Step 8: Verify
+### Step 10: Verify
 
-1. Check that all files are syntactically valid using `php -l` (Docker-aware).
-2. Show a summary of changes made:
+1. Use `Read` to verify the action class, model, and source file are all correct.
+2. Run `php -l` on all modified files to check syntax (Docker-aware: detect container from `docker-compose.yml`).
+3. Verify that:
+   - The action class extends `EduLazaro\Laractions\Action`
+   - The protected model property name matches the lowercase model class name
+   - The action key in `$actions` is snake_case
+   - The `use` import is present in the model file
+   - The `HasActions` trait is used in the model
+   - The original method now calls the action instead of containing business logic
+   - HTTP/UI concerns remain in the controller/component
+4. Show a summary of changes:
    - Action class created at: `{path}`
    - Model updated: `{path}` (action registered)
    - Source refactored: `{path}` (business logic replaced with action call)
 
+### Step 11: Show Usage Examples
+
+Show the user how to use the extracted action in different contexts:
+
+```php
+// Synchronous (default)
+${model}->action('action_key')->run($data);
+
+// With named parameters
+${model}->action('action_key')
+    ->with(['key' => $value])
+    ->run();
+
+// Asynchronous (queued)
+${model}->action('action_key')
+    ->queue('default')
+    ->dispatch($data);
+
+// With delay and retries
+${model}->action('action_key')
+    ->queue('default')
+    ->delay(60)
+    ->retry(3)
+    ->dispatch($data);
+
+// With actor tracking
+auth()->user()->act(ActionClass::class)
+    ->on(${model})
+    ->trace()
+    ->run($data);
+
+// As callable
+$action = ${model}->action('action_key');
+$action($data); // Same as ->run($data)
+```
+
 ## Guidelines
 
 - **Keep the action focused**: One action, one responsibility. If the method does multiple unrelated things, suggest splitting into multiple actions.
-- **Keep validation in the caller**: The controller/component validates input. The action receives clean data.
+- **Keep validation in the caller**: The controller/component validates input. The action receives clean data. However, if validation is part of the business logic itself, use `$rules` in the action.
 - **Keep UI responses in the caller**: Flash messages, redirects, and event dispatching stay in the controller/component.
 - **Match existing patterns**: Read other actions for the same model to maintain consistency in parameter passing, return types, and error handling.
 - **Use text() for translations**: Any translatable strings in the action should use the `text()` helper.
 - **No comments**: Unless the user explicitly requests them.
+- **Suggest async when appropriate**: If the extracted logic involves external API calls, file processing, email sending, or heavy computations, suggest using `->queue()->dispatch()` instead of `->run()`.
+- **Suggest tracing when appropriate**: If the action modifies critical data or performs irreversible operations, suggest using `->trace()` for audit trail.
 
 ## Notes
 
@@ -201,3 +301,5 @@ public function save()
 - If the method is too simple (one or two lines of logic), advise against extraction -- the overhead of an action class may not be justified.
 - If the method has complex conditional logic that depends on HTTP context, suggest which parts to extract and which to leave.
 - Always add the `use` import for the action class in the model file.
+- Actions support `__invoke()`, so they can be used as callables.
+- For testing, models with `HasActions` support `mockAction()` to replace actions with mocks.

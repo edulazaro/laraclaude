@@ -363,14 +363,14 @@ Pull requests welcome. To add a new skill:
 
 ## Sponsors
 
-<table>
+<table border="0" cellspacing="0" cellpadding="10">
   <tr>
     <td align="center">
-      <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="80" alt="Kenodo"></a><br>
+      <a href="https://kenodo.com"><img src="art/logo-kenodo.png" width="48" alt="Kenodo"></a><br>
       <a href="https://kenodo.com">Kenodo</a>
     </td>
     <td align="center">
-      <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="80" alt="AndorraDev"></a><br>
+      <a href="https://andorradev.com"><img src="art/logo-andorradev.png" width="48" alt="AndorraDev"></a><br>
       <a href="https://andorradev.com">AndorraDev</a>
     </td>
   </tr>
@@ -386,7 +386,7 @@ MIT - see [LICENSE](LICENSE)
 
 ## Branding
 
-<table>
+<table border="0" cellspacing="0" cellpadding="10">
   <tr>
     <td align="center">
       <strong>Light</strong><br><br>
