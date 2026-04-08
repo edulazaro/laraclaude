@@ -1,5 +1,9 @@
 # LaraClaude
 
+<p align="center">
+  <img src="art/laraclaude.webp" alt="LaraClaude" width="600">
+</p>
+
 A comprehensive Laravel toolkit plugin for [Claude Code](https://claude.ai/code). 27 specialized skills to analyze, debug, scaffold, and optimize Laravel applications directly from your terminal.
 
 ## Installation
