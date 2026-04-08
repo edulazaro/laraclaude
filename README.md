@@ -1,12 +1,14 @@
 # LaraClaude
 
+A comprehensive Laravel toolkit plugin for [Claude Code](https://claude.ai/code). 27 specialized skills to analyze, debug, scaffold, and optimize Laravel applications directly from your terminal.
+
 <p align="center">
   <img src="art/laraclaude.webp" alt="LaraClaude" width="600">
 </p>
 
-A comprehensive Laravel toolkit plugin for [Claude Code](https://claude.ai/code). 27 specialized skills to analyze, debug, scaffold, and optimize Laravel applications directly from your terminal.
-
 ## Installation
+
+Requires [Claude Code](https://claude.ai/code) installed.
 
 ```bash
 /plugin install github:edulazaro/laraclaude
@@ -60,7 +62,7 @@ Run `migrate:fresh` in your Docker container and get detailed error analysis wit
 ### Models & Queries
 
 #### `/lc:analyze-model`
-Deep analysis of any Eloquent model — relationships, scopes, casts, fillable, observers, keepers, actions, and potential issues.
+Deep analysis of any Eloquent model: relationships, scopes, casts, fillable, observers, keepers, actions, and potential issues.
 
 ```
 /lc:analyze-model Property                # Analyze specific model
@@ -108,7 +110,7 @@ Detect database columns that are never referenced anywhere in the codebase.
 ### Security & Performance
 
 #### `/lc:security-audit`
-Detect common Laravel security vulnerabilities — SQL injection, XSS, mass assignment, exposed secrets.
+Detect common Laravel security vulnerabilities: SQL injection, XSS, mass assignment, exposed secrets.
 
 ```
 /lc:security-audit                        # Scan entire project
@@ -142,7 +144,7 @@ Detect repeated queries and computations that should be cached.
 ### Livewire & Blade
 
 #### `/lc:livewire-audit`
-Detect common Livewire/Volt problems — unserializable properties, missing wire:key, orphaned events, re-render issues.
+Detect common Livewire/Volt problems: unserializable properties, missing wire:key, orphaned events, re-render issues.
 
 ```
 /lc:livewire-audit                        # Scan all components
@@ -152,7 +154,7 @@ Detect common Livewire/Volt problems — unserializable properties, missing wire
 ```
 
 #### `/lc:livewire-optimize`
-Detect and fix Livewire performance issues — heavy renders, excessive queries, unnecessary reactivity.
+Detect and fix Livewire performance issues: heavy renders, excessive queries, unnecessary reactivity.
 
 ```
 /lc:livewire-optimize                     # Scan all components
@@ -218,7 +220,7 @@ Generate a table component with filters, sorting, and infinite scroll using the 
 ```
 
 #### `/lc:generate-crud`
-Generate complete CRUD scaffolding — migration, model, controller, routes, views (index + create/edit modal).
+Generate complete CRUD scaffolding: migration, model, controller, routes, views (index + create/edit modal).
 
 ```
 /lc:generate-crud Invoice                 # Full CRUD for Invoice
@@ -340,6 +342,15 @@ Pull requests welcome. To add a new skill:
 2. Follow the YAML frontmatter format
 3. Add to README
 4. Submit PR
+
+## Sponsors
+
+- [Kenodo](https://kenodo.com)
+- [AndorraDev](https://andorradev.com)
+
+## Author
+
+Created by [Edu Lazaro](https://edulazaro.com)
 
 ## License
 
